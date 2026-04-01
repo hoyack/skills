@@ -1,0 +1,135 @@
+#!/usr/bin/env bash
+# Capture a screenshot from the Linux Mint desktop MCP and save as an image file.
+# Usage: desktop-screenshot [output_path] [--region x,y,w,h] [--quality N]
+#
+# Examples:
+#   desktop-screenshot                          # -> /tmp/desktop_screenshot.png
+#   desktop-screenshot /tmp/shot.jpg            # -> /tmp/shot.jpg (JPEG by extension)
+#   desktop-screenshot --region 0,0,400,300     # -> cropped region
+#   desktop-screenshot --quality 50             # -> JPEG quality 1-100
+
+set -euo pipefail
+
+OUTPUT="/tmp/desktop_screenshot.png"
+REGION=""
+QUALITY=""
+FORMAT=""
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --region)
+      REGION="$2"; shift 2 ;;
+    --quality)
+      QUALITY="$2"; shift 2 ;;
+    -*)
+      echo "Unknown flag: $1" >&2; exit 1 ;;
+    *)
+      OUTPUT="$1"; shift ;;
+  esac
+done
+
+# Determine format from extension
+case "${OUTPUT##*.}" in
+  jpg|jpeg) FORMAT="jpeg" ;;
+  *)        FORMAT="png"  ;;
+esac
+
+# Build args JSON
+ARGS="{\"format\":\"${FORMAT}\""
+[[ -n "$QUALITY" ]] && ARGS="${ARGS},\"quality\":${QUALITY}"
+[[ -n "$REGION" ]] && ARGS="${ARGS},\"region\":[${REGION}]"
+ARGS="${ARGS}}"
+
+TMPFILE=$(mktemp /tmp/mcporter_raw.XXXXXX)
+trap "rm -f '$TMPFILE'" EXIT
+
+MCP_CONFIG="${MCP_CONFIG:-$HOME/.openclaw/config/mcporter.json}"
+mcporter --config "$MCP_CONFIG" call mint.pyautogui_screenshot_encoded --args "$ARGS" --output raw > "$TMPFILE" 2>&1
+
+python3 -c "
+import base64, sys, json, re, os
+with open('$TMPFILE') as f:
+    raw = f.read()
+
+# Try multiple parsing strategies
+
+# Strategy 1: Parse as JSON with content array
+try:
+    data = json.loads(raw)
+    if 'content' in data and len(data['content']) > 0:
+        content = data['content'][0]
+        if 'image' in content and 'data' in content['image']:
+            b64_data = content['image']['data']
+            # Remove data URI prefix if present
+            if ',' in b64_data:
+                b64_data = b64_data.split(',')[1]
+            img = base64.b64decode(b64_data)
+            with open('$OUTPUT', 'wb') as out:
+                out.write(img)
+            print(f'$OUTPUT ({len(img)} bytes)')
+            sys.exit(0)
+        elif 'data' in content:
+            b64_data = content['data']
+            if ',' in b64_data:
+                b64_data = b64_data.split(',')[1]
+            img = base64.b64decode(b64_data)
+            with open('$OUTPUT', 'wb') as out:
+                out.write(img)
+            print(f'$OUTPUT ({len(img)} bytes)')
+            sys.exit(0)
+except (json.JSONDecodeError, KeyError, IndexError):
+    pass
+
+# Strategy 2: Parse as JSON with result field
+try:
+    data = json.loads(raw)
+    if 'result' in data and 'data' in data['result']:
+        b64_data = data['result']['data']
+        if ',' in b64_data:
+            b64_data = b64_data.split(',')[1]
+        img = base64.b64decode(b64_data)
+        with open('$OUTPUT', 'wb') as out:
+            out.write(img)
+        print(f'$OUTPUT ({len(img)} bytes)')
+        sys.exit(0)
+except (json.JSONDecodeError, KeyError):
+    pass
+
+# Strategy 3: Extract from raw output (older mcporter format)
+start = raw.find(\"data: '\") + len(\"data: '\")
+end = raw.find(\"',\", start)
+if start >= 7 and end > 0:
+    b64 = raw[start:end]
+    try:
+        img = base64.b64decode(b64)
+        with open('$OUTPUT', 'wb') as f:
+            f.write(img)
+        print(f'$OUTPUT ({len(img)} bytes)')
+        sys.exit(0)
+    except:
+        pass
+
+# Strategy 4: Extract base64 directly from text
+b64_pattern = r'[A-Za-z0-9+/]{100,}={0,2}'
+matches = re.findall(b64_pattern, raw)
+if matches:
+    for match in matches:
+        try:
+            img = base64.b64decode(match)
+            # Check if it looks like a PNG or JPEG
+            if img[:4] == b'\\x89PNG' or img[:2] == b'\\xff\\xd8':
+                with open('$OUTPUT', 'wb') as f:
+                    f.write(img)
+                print(f'$OUTPUT ({len(img)} bytes)')
+                sys.exit(0)
+        except:
+            continue
+
+# If we get here and file exists, it was already saved by Strategy 1
+if os.path.exists('$OUTPUT') and os.path.getsize('$OUTPUT') > 0:
+    sys.exit(0)
+
+print('ERROR: could not parse screenshot response', file=sys.stderr)
+print(f'Raw output preview: {raw[:500]}...', file=sys.stderr)
+sys.exit(1)
+"
