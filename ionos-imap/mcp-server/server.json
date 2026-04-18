@@ -1,0 +1,29 @@
+{
+  "name": "ionos-imap",
+  "version": "0.1.0",
+  "description": "IONOS IMAP mail access — read, triage, search, and manage mailbox messages",
+  "repository": "",
+  "transport": ["stdio", "streamable-http"],
+  "environment": {
+    "IONOS_IMAP_USERNAME": {
+      "description": "IONOS IMAP email address (full address, e.g. user@domain.com)",
+      "required": true,
+      "secret": false
+    },
+    "IONOS_IMAP_PASSWORD": {
+      "description": "IONOS IMAP password or app-specific password",
+      "required": true,
+      "secret": true
+    },
+    "IONOS_IMAP_HOST": {
+      "description": "IMAP server hostname (default: imap.ionos.com)",
+      "required": false,
+      "secret": false
+    },
+    "IONOS_IMAP_CONFIG": {
+      "description": "Path to ionos-imap.toml config file (optional)",
+      "required": false,
+      "secret": false
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "mautic-mcp-server",
+  "version": "1.0.0",
+  "description": "Mautic MCP Server with HTTP Basic Auth",
+  "type": "module",
+  "bin": {
+    "mautic-mcp-server": "./index.js"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.26.0",
+    "zod": "^3.22.4"
+  }
+}

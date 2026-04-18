@@ -1,0 +1,92 @@
+#!/usr/bin/python3
+"""
+Screenshot helper using GNOME Shell's Screencast service.
+Works on GNOME/Wayland by leveraging org.gnome.Shell.Screencast D-Bus API.
+
+IMPORTANT: The caller must keep the D-Bus connection open until StopScreencast
+completes, otherwise the screencast service will detect "Sender has vanished"
+and leave a stuck Mutter ScreenCast session that inhibits future screenshots.
+"""
+
+import dbus
+import sys
+import time
+import os
+import shutil
+
+
+def screenshot(filename):
+    bus = dbus.SessionBus()
+
+    try:
+        # Get the screencast service
+        screencast = bus.get_object(
+            'org.gnome.Shell.Screencast', '/org/gnome/Shell/Screencast'
+        )
+        iface = dbus.Interface(screencast, 'org.gnome.Shell.Screencast')
+
+        # Use a temporary filename stem (service will append .undefined)
+        temp_stem = f"/tmp/openclaw_screenshot_{int(time.time() * 1000)}"
+
+        # Call ScreencastArea with a custom PNG pipeline
+        # x, y, width, height, file_template, options
+        success, filename_used = iface.ScreencastArea(
+            0, 0, 1920, 1080,
+            temp_stem,
+            {"pipeline": "videoconvert ! pngenc"}
+        )
+
+        if not success:
+            print("ScreencastArea failed", file=sys.stderr)
+            sys.exit(1)
+
+        # Wait for at least one frame to be captured and written
+        time.sleep(0.8)
+
+        # Stop the screencast - this is critical for cleanup
+        try:
+            iface.StopScreencast()
+        except Exception as e:
+            print(f"StopScreencast warning: {e}", file=sys.stderr)
+
+        # Keep the D-Bus connection alive briefly so the service
+        # doesn't see "Sender has vanished" before cleanup completes
+        time.sleep(0.5)
+
+        # Wait for the file to be written and closed
+        actual_file = filename_used
+        for i in range(30):
+            if os.path.exists(actual_file) and os.path.getsize(actual_file) > 1000:
+                break
+            time.sleep(0.1)
+
+        if not os.path.exists(actual_file) or os.path.getsize(actual_file) < 100:
+            print(
+                f"Screenshot file not created or too small: {actual_file}",
+                file=sys.stderr
+            )
+            sys.exit(1)
+
+        # Move/rename to the requested output path
+        os.makedirs(os.path.dirname(os.path.abspath(filename)), exist_ok=True)
+        shutil.move(actual_file, filename)
+
+        print(filename)
+
+    finally:
+        # Keep the bus connection alive a bit longer to ensure
+        # the screencast service sees us as still connected during cleanup
+        time.sleep(0.3)
+
+
+if __name__ == "__main__":
+    if len(sys.argv) < 2:
+        user = os.environ.get('USER', 'hoyack')
+        filename = (
+            f"/home/{user}/.openclaw/workspace/"
+            f"screenshot_{time.strftime('%Y%m%d_%H%M%S')}.png"
+        )
+    else:
+        filename = sys.argv[1]
+
+    screenshot(filename)

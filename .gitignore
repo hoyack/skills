@@ -9,3 +9,6 @@ Thumbs.db
 # Python
 __pycache__/
 *.pyc
+node_modules/
+*/node_modules/
+paperclip/mcp-server/

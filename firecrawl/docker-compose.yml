@@ -1,0 +1,177 @@
+name: firecrawl
+
+services:
+  # Main Firecrawl API service
+  api:
+    image: ghcr.io/firecrawl/firecrawl:latest
+    container_name: firecrawl-api
+    restart: unless-stopped
+    ports:
+      - "3002:3002"
+    environment:
+      - PORT=3002
+      - HOST=0.0.0.0
+      - ENV=local
+      - NUQ_DATABASE_URL=postgresql://postgres:postgres@nuq-postgres:5432/postgres
+      - NUQ_RABBITMQ_URL=amqp://rabbitmq:5672
+      - NUQ_REDIS_URL=redis://redis:6379
+      - REDIS_URL=redis://redis:6379
+      - REDIS_RATE_LIMIT_URL=redis://redis:6379
+      - PLAYWRIGHT_MICROSERVICE_URL=http://playwright-service:3000/scrape
+      - USE_DB_AUTHENTICATION=false
+      - BULL_AUTH_KEY=firecrawl-admin-2026
+      - TEST_API_KEY=fc-test-key-local
+      - NUM_WORKERS_PER_QUEUE=2
+      - CRAWL_CONCURRENT_REQUESTS=3
+      - MAX_CONCURRENT_JOBS=2
+      - BROWSER_POOL_SIZE=2
+      - SEARXNG_ENDPOINT=http://host.docker.internal:8090
+      - LOGGING_LEVEL=INFO
+    depends_on:
+      nuq-postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      playwright-service:
+        condition: service_started
+    networks:
+      - skills-network
+      - firecrawl-internal
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ulimits:
+      nofile:
+        soft: 65535
+        hard: 65535
+    command: node dist/src/index.js
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"require('http').get('http://localhost:3002/', (r) => process.exit(r.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))\""]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  # NUQ Workers
+  nuq-worker:
+    image: ghcr.io/firecrawl/firecrawl:latest
+    container_name: firecrawl-nuq-worker
+    restart: unless-stopped
+    environment:
+      - PORT=3002
+      - HOST=0.0.0.0
+      - ENV=local
+      - NUQ_DATABASE_URL=postgresql://postgres:postgres@nuq-postgres:5432/postgres
+      - NUQ_RABBITMQ_URL=amqp://rabbitmq:5672
+      - NUQ_REDIS_URL=redis://redis:6379
+      - REDIS_URL=redis://redis:6379
+      - REDIS_RATE_LIMIT_URL=redis://redis:6379
+      - PLAYWRIGHT_MICROSERVICE_URL=http://playwright-service:3000/scrape
+      - USE_DB_AUTHENTICATION=false
+      - BULL_AUTH_KEY=firecrawl-admin-2026
+      - TEST_API_KEY=fc-test-key-local
+      - NUM_WORKERS_PER_QUEUE=2
+      - CRAWL_CONCURRENT_REQUESTS=3
+      - MAX_CONCURRENT_JOBS=2
+      - BROWSER_POOL_SIZE=2
+      - SEARXNG_ENDPOINT=http://host.docker.internal:8090
+      - LOGGING_LEVEL=INFO
+    depends_on:
+      nuq-postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      playwright-service:
+        condition: service_started
+      api:
+        condition: service_started
+    networks:
+      - firecrawl-internal
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    command: node dist/src/services/worker/nuq-worker.js
+
+  # Playwright browser service
+  playwright-service:
+    image: ghcr.io/firecrawl/playwright-service:latest
+    container_name: firecrawl-playwright
+    restart: unless-stopped
+    environment:
+      - PORT=3000
+      - MAX_CONCURRENT_PAGES=3
+    networks:
+      - firecrawl-internal
+    # Note: Playwright service doesn't have standard healthcheck tools
+    # Service is healthy if it's running (port 3000 is accessible)
+    # Manual verification: docker exec firecrawl-playwright node -e "require('net').connect(3000,'localhost',function(){console.log('OK');process.exit(0)}).on('error',function(){process.exit(1)})"
+    # healthcheck disabled - service works but minimal container lacks tools
+
+  # NUQ PostgreSQL - using standard postgres with init script
+  nuq-postgres:
+    image: postgres:16-alpine
+    container_name: firecrawl-nuq-postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    volumes:
+      - nuq-postgres-data:/var/lib/postgresql/data
+      - ./nuq-postgres-init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+    networks:
+      - firecrawl-internal
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # RabbitMQ
+  rabbitmq:
+    image: rabbitmq:3-alpine
+    container_name: firecrawl-rabbitmq
+    restart: unless-stopped
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    networks:
+      - firecrawl-internal
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "check_running"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  # Redis
+  redis:
+    image: redis:alpine
+    container_name: firecrawl-redis
+    restart: unless-stopped
+    command: redis-server --bind 0.0.0.0 --maxmemory 256mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis-data:/data
+    networks:
+      - firecrawl-internal
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  nuq-postgres-data:
+  rabbitmq-data:
+  redis-data:
+
+networks:
+  skills-network:
+    external: true
+  firecrawl-internal:
+    driver: bridge

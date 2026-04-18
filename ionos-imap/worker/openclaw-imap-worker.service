@@ -1,0 +1,23 @@
+[Unit]
+Description=OpenClaw IONOS IMAP IDLE Worker
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=%h/.local/bin/ionos-imap-worker
+Restart=on-failure
+RestartSec=5
+Environment=IONOS_IMAP_USERNAME=
+Environment=IONOS_IMAP_PASSWORD=
+EnvironmentFile=-%h/.config/openclaw/ionos-imap.env
+
+# Hardening
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=%h/.local/state/openclaw/imap
+PrivateTmp=true
+
+[Install]
+WantedBy=default.target

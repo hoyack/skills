@@ -1,0 +1,29 @@
+{
+  "name": "ionos-smtp",
+  "version": "0.1.0",
+  "description": "IONOS SMTP mail send — compose and send email with attachments, threading, and queue support",
+  "repository": "",
+  "transport": ["stdio", "streamable-http"],
+  "environment": {
+    "IONOS_SMTP_USERNAME": {
+      "description": "IONOS SMTP email address (full address, e.g. user@domain.com)",
+      "required": true,
+      "secret": false
+    },
+    "IONOS_SMTP_PASSWORD": {
+      "description": "IONOS SMTP password or app-specific password",
+      "required": true,
+      "secret": true
+    },
+    "IONOS_SMTP_HOST": {
+      "description": "SMTP server hostname (default: smtp.ionos.com)",
+      "required": false,
+      "secret": false
+    },
+    "IONOS_SMTP_CONFIG": {
+      "description": "Path to ionos-smtp.toml config file (optional)",
+      "required": false,
+      "secret": false
+    }
+  }
+}

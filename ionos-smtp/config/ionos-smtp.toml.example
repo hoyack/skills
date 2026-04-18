@@ -1,0 +1,38 @@
+[connection]
+host = "smtp.ionos.com"
+port = 465                        # 465 for SMTPS/implicit TLS, 587 for STARTTLS
+tls_mode = "implicit"             # "implicit" | "starttls"
+timeout_seconds = 30
+
+[account]
+default_from_name = "Brandon Hoyack"
+default_from_email = "brandon@hoyack.com"    # must match authenticated account
+default_reply_to = ""             # optional; blank = no Reply-To header
+
+[send]
+default_append_to_sent = true
+sent_folder_name = "Sent"         # IONOS uses "Sent" — some servers use "Sent Items"
+max_attachment_mb = 25            # IONOS limit is typically 50MB per message total
+max_total_size_mb = 40            # conservative; headroom for encoding overhead
+rate_limit_per_minute = 30        # self-imposed; IONOS limits vary by plan
+
+[queue]
+enabled = false
+rabbitmq_uri = "amqp://localhost"
+queue_name = "mail.ionos.send"
+deadletter_queue_name = "mail.ionos.send.deadletter"
+max_retries = 5
+retry_backoff_initial = 2.0
+retry_backoff_max = 300.0
+
+[state]
+backend = "sqlite"                # "sqlite" | "supabase"
+sqlite_path = "~/.local/state/openclaw/smtp/state.db"
+
+[imap_integration]
+enabled = true                    # set false if IMAP skill not installed
+mcp_tool_name = "mail.ionos.append_to_sent"
+
+[mcp]
+transport = "stdio"
+# http_port = 8766

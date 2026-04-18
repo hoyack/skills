@@ -1,0 +1,23 @@
+[Unit]
+Description=OpenClaw IONOS SMTP Queue Worker
+After=network-online.target rabbitmq-server.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=%h/.local/bin/ionos-smtp-worker
+Restart=on-failure
+RestartSec=5
+Environment=IONOS_SMTP_USERNAME=
+Environment=IONOS_SMTP_PASSWORD=
+EnvironmentFile=-%h/.config/openclaw/ionos-smtp.env
+
+# Hardening
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=%h/.local/state/openclaw/smtp
+PrivateTmp=true
+
+[Install]
+WantedBy=default.target

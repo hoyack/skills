@@ -1,0 +1,17 @@
+use_default_settings: true
+
+server:
+  secret_key: "<your-secret-key>"
+  limiter: false
+  image_proxy: true
+  port: 8080
+  bind_address: "0.0.0.0"
+
+search:
+  formats:
+    - html
+    - json
+    - csv
+    - rss
+  safesearch: 0
+  autocomplete: "google"

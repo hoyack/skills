@@ -1,0 +1,27 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "ionos-imap-mcp"
+version = "0.1.0"
+description = "IONOS IMAP mail access MCP server for OpenClaw agents"
+requires-python = ">=3.11"
+dependencies = [
+    "fastmcp>=3.0",
+    "imap-tools>=1.7",
+    "python-dotenv>=1.0",
+    "aiosqlite>=0.20",
+]
+
+[project.optional-dependencies]
+rabbitmq = ["aio-pika>=9.4"]
+supabase = ["supabase>=2.0"]
+dev = ["pytest>=8.0", "pytest-asyncio>=0.23"]
+
+[project.scripts]
+ionos-imap-mcp = "ionos_imap.server:main"
+ionos-imap-worker = "ionos_imap.idle_worker:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/ionos_imap"]

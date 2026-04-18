@@ -1,0 +1,23 @@
+name: nginx-proxy
+
+services:
+  nginx:
+    image: nginx:alpine
+    container_name: nginx-proxy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    networks:
+      - skills-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://127.0.0.1:80/healthz > /dev/null || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+networks:
+  skills-network:
+    external: true

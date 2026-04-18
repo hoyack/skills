@@ -1,0 +1,93 @@
+services:
+  server:
+    image: twentycrm/twenty:${TAG:-latest}
+    container_name: twenty-server
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - PG_DATABASE_URL=postgresql://${PG_DATABASE_USER:-postgres}:${PG_DATABASE_PASSWORD}@db:5432/default
+      - REDIS_URL=${REDIS_URL:-redis://redis:6379}
+      - SERVER_URL=${SERVER_URL:-http://localhost:3000}
+      - APP_SECRET=${APP_SECRET}
+      - STORAGE_TYPE=${STORAGE_TYPE:-local}
+      - STORAGE_LOCAL_PATH=.local-storage
+      - IS_SIGN_UP_DISABLED=false
+      - SIGN_UP_PREFILL_DATA=true
+      - CALENDAR_PROVIDER_GOOGLE=false
+      - IS_MESSAGING_ENABLED=false
+    depends_on:
+      - db
+      - redis
+    networks:
+      - skills-network
+      - twenty-internal
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:3000/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  worker:
+    image: twentycrm/twenty:${TAG:-latest}
+    container_name: twenty-worker
+    restart: unless-stopped
+    command: yarn worker:prod
+    environment:
+      - PG_DATABASE_URL=postgresql://${PG_DATABASE_USER:-postgres}:${PG_DATABASE_PASSWORD}@db:5432/default
+      - REDIS_URL=${REDIS_URL:-redis://redis:6379}
+      - SERVER_URL=${SERVER_URL:-http://localhost:3000}
+      - APP_SECRET=${APP_SECRET}
+      - STORAGE_TYPE=${STORAGE_TYPE:-local}
+      - STORAGE_LOCAL_PATH=.local-storage
+      - IS_SIGN_UP_DISABLED=false
+      - SIGN_UP_PREFILL_DATA=true
+      - CALENDAR_PROVIDER_GOOGLE=false
+      - MESSAGE_QUEUE_PROVIDER=pg-boss
+      - DISABLE_DB_MIGRATIONS=true
+    depends_on:
+      - db
+      - redis
+      - server
+    networks:
+      - twenty-internal
+
+  db:
+    image: postgres:16-alpine
+    container_name: twenty-db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=${PG_DATABASE_USER:-postgres}
+      - POSTGRES_PASSWORD=${PG_DATABASE_PASSWORD}
+      - POSTGRES_DB=default
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - twenty-internal
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${PG_DATABASE_USER:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:alpine
+    container_name: twenty-redis
+    restart: unless-stopped
+    command: redis-server --maxmemory 256mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis-data:/data
+    networks:
+      - twenty-internal
+
+volumes:
+  postgres-data:
+  redis-data:
+
+networks:
+  skills-network:
+    external: true
+  twenty-internal:
+    driver: bridge

@@ -1,0 +1,30 @@
+[connection]
+host = "imap.ionos.com"
+port = 993
+use_tls = true
+timeout_seconds = 30
+
+[worker]
+watched_folders = ["INBOX"]
+idle_rotation_seconds = 1700           # <= 29 min per RFC 2177
+reconnect_backoff_initial = 1.0
+reconnect_backoff_max = 60.0
+heartbeat_interval_seconds = 60
+emit_rabbitmq_events = false
+rabbitmq_uri = "amqp://localhost"      # only used if emit_rabbitmq_events = true
+rabbitmq_topic = "mail.ionos.new"
+
+[state]
+backend = "sqlite"                     # "sqlite" | "supabase"
+sqlite_path = "~/.local/state/openclaw/imap/state.db"
+# supabase_url = "..."                 # only if backend = "supabase"
+# supabase_key_credential = "supabase.service_role"
+
+[attachments]
+staging_dir = "~/.local/state/openclaw/imap/attachments"
+max_size_mb = 50
+allowed_types = ["*"]                  # or ["application/pdf", "image/*", ...]
+
+[mcp]
+transport = "stdio"                    # "stdio" | "http"
+# http_port = 8765                     # only if transport = "http"

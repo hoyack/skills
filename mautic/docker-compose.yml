@@ -1,0 +1,120 @@
+name: mautic
+
+services:
+  mautic:
+    image: mautic/mautic:5-apache
+    container_name: mautic-app
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    environment:
+      - MAUTIC_DB_HOST=mautic-db
+      - MAUTIC_DB_PORT=3306
+      - MAUTIC_DB_NAME=mautic
+      - MAUTIC_DB_USER=mautic
+      - MAUTIC_DB_PASSWORD=<db-password>
+      - MAUTIC_DB_DRIVER=pdo_mysql
+      - MAUTIC_RUN_CRON_JOBS=true
+      - MAUTIC_TRUSTED_PROXIES=["0.0.0.0/0"]
+      - PHP_MEMORY_LIMIT=512M
+      - PHP_MAX_UPLOAD_SIZE=64M
+      - PHP_MAX_EXECUTION_TIME=300
+    volumes:
+      - mautic-data:/var/www/html
+    depends_on:
+      mautic-db:
+        condition: service_healthy
+      mautic-redis:
+        condition: service_started
+    networks:
+      - skills-network
+      - mautic-internal
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost/index.php > /dev/null || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  mautic-db:
+    image: mariadb:10.11
+    container_name: mautic-db
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=<root-password>
+      - MYSQL_DATABASE=mautic
+      - MYSQL_USER=mautic
+      - MYSQL_PASSWORD=<db-password>
+      - MYSQL_CHARSET=utf8mb4
+      - MYSQL_COLLATION=utf8mb4_unicode_ci
+    volumes:
+      - mautic-db-data:/var/lib/mysql
+    networks:
+      - mautic-internal
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    command: >
+      --innodb-buffer-pool-size=256M
+      --max-allowed-packet=64M
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+
+  mautic-redis:
+    image: redis:7-alpine
+    container_name: mautic-redis
+    restart: unless-stopped
+    command: redis-server --maxmemory 128mb --maxmemory-policy allkeys-lru
+    volumes:
+      - mautic-redis-data:/data
+    networks:
+      - mautic-internal
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # Cron jobs for Mautic
+  mautic-cron:
+    image: mautic/mautic:5-apache
+    container_name: mautic-cron
+    restart: unless-stopped
+    environment:
+      - MAUTIC_DB_HOST=mautic-db
+      - MAUTIC_DB_PORT=3306
+      - MAUTIC_DB_NAME=mautic
+      - MAUTIC_DB_USER=mautic
+      - MAUTIC_DB_PASSWORD=<db-password>
+      - MAUTIC_RUN_CRON_JOBS=true
+    volumes:
+      - mautic-data:/var/www/html
+    depends_on:
+      - mautic-db
+    networks:
+      - mautic-internal
+    command: >
+      sh -c "
+        while true; do
+          sleep 60
+          php /var/www/html/bin/console mautic:segments:update
+          php /var/www/html/bin/console mautic:campaigns:update
+          php /var/www/html/bin/console mautic:campaigns:trigger
+          php /var/www/html/bin/console mautic:emails:send
+          php /var/www/html/bin/console mautic:import
+        done
+      "
+
+volumes:
+  mautic-data:
+  mautic-db-data:
+  mautic-redis-data:
+
+networks:
+  skills-network:
+    external: true
+  mautic-internal:
+    driver: bridge
