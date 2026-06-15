@@ -1,0 +1,95 @@
+---
+# OpenClaw Gateway Deployment with SearXNG search
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openclaw-gateway
+  namespace: {{NAMESPACE}}
+  labels:
+    app: openclaw-gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: openclaw-gateway
+  template:
+    metadata:
+      labels:
+        app: openclaw-gateway
+    spec:
+      containers:
+        - name: openclaw
+          image: ghcr.io/openclaw/openclaw:latest
+          ports:
+            - containerPort: 18789
+              name: http
+          env:
+            - name: OPENCLAW_CONFIG_PATH
+              value: /data/.openclaw/openclaw.json
+            - name: OPENCLAW_AUTH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: openclaw-secrets
+                  key: auth-token
+          volumeMounts:
+            - name: config
+              mountPath: /data/.openclaw
+            - name: workspace
+              mountPath: /data/workspace
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "2Gi"
+              cpu: "1000m"
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 18789
+            initialDelaySeconds: 30
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 18789
+            initialDelaySeconds: 5
+            periodSeconds: 10
+      volumes:
+        - name: config
+          configMap:
+            name: openclaw-config
+        - name: workspace
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: openclaw-gateway
+  namespace: {{NAMESPACE}}
+spec:
+  selector:
+    app: openclaw-gateway
+  ports:
+    - port: 18789
+      targetPort: 18789
+      name: http
+  type: ClusterIP
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: openclaw-config
+  namespace: {{NAMESPACE}}
+data:
+  openclaw.json: |
+    {{OPENCLAW_CONFIG_JSON}}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: openclaw-secrets
+  namespace: {{NAMESPACE}}
+type: Opaque
+stringData:
+  auth-token: "{{AUTH_TOKEN}}"
