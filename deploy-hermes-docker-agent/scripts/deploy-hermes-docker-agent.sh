@@ -82,8 +82,9 @@ fi
 install -d -m 700 "$DATA_DIR"
 docker pull "$IMAGE" >/dev/null
 
-printf '%s\n' "$OLLAMA_API_KEY" | docker run --rm -i \
+docker run --rm \
   -v "$DATA_DIR:/opt/data" \
+  --env OLLAMA_API_KEY \
   --env HERMES_AGENT_DISPLAY="$DISPLAY_NAME" \
   --env HERMES_CONTAINER="$CONTAINER" \
   --env HERMES_MODEL="$MODEL" \
@@ -93,7 +94,7 @@ printf '%s\n' "$OLLAMA_API_KEY" | docker run --rm -i \
   --entrypoint sh "$IMAGE" -lc '/opt/hermes/.venv/bin/python - <<"PY"
 import os, pathlib, secrets, sys
 import yaml
-api_key = sys.stdin.readline().rstrip("\n")
+api_key = os.environ["OLLAMA_API_KEY"]
 root = pathlib.Path("/opt/data")
 root.mkdir(parents=True, exist_ok=True)
 config_path = root / "config.yaml"
@@ -139,9 +140,12 @@ os.chmod(env_path, 0o600)
 display_name = os.environ["HERMES_AGENT_DISPLAY"]
 container = os.environ["HERMES_CONTAINER"]
 host_port = os.environ["HERMES_HOST_PORT"]
-readme = f"""# {display_name} Hermes Agent\n\n## Runtime\n\n- Container: `{container}`\n- Provider: `ollama-cloud`\n- Model: `{os.environ['HERMES_MODEL']}`\n- Search: `{os.environ['SEARXNG_URL']}`\n- Health: `http://127.0.0.1:{host_port}/health`\n\n## TUI\n\n```bash\ndocker exec -it {container} hermes --tui\ndocker exec -it {container} hermes --tui --continue\n```\n\n## Operations\n\n```bash\ndocker start {container}\ndocker stop {container}\ndocker exec {container} hermes status\ndocker logs -f {container}\n```\n"""
+hermes_model = os.environ["HERMES_MODEL"]
+searxng_url = os.environ["SEARXNG_URL"]
+hermes_timezone = os.environ["HERMES_TIMEZONE"]
+readme = f"""# {display_name} Hermes Agent\n\n## Runtime\n\n- Container: `{container}`\n- Provider: `ollama-cloud`\n- Model: `{hermes_model}`\n- Search: `{searxng_url}`\n- Health: `http://127.0.0.1:{host_port}/health`\n\n## TUI\n\n```bash\ndocker exec -it {container} hermes --tui\ndocker exec -it {container} hermes --tui --continue\n```\n\n## Operations\n\n```bash\ndocker start {container}\ndocker stop {container}\ndocker exec {container} hermes status\ndocker logs -f {container}\n```\n"""
 (root / f"README-{container}.md").write_text(readme, encoding="utf-8")
-(root / "SOUL.md").write_text(f"""# SOUL.md - {display_name}\n\nYou are {display_name}, a Hermes Agent running inside the local Docker container `{container}`.\n\n- Provider: Ollama Cloud.\n- Model: `{os.environ['HERMES_MODEL']}`.\n- Search backend: SearXNG at `{os.environ['SEARXNG_URL']}`.\n- Timezone: `{os.environ['HERMES_TIMEZONE']}`.\n\nOpen the TUI from the host with:\n\n```bash\ndocker exec -it {container} hermes --tui\n```\n""", encoding="utf-8")
+(root / "SOUL.md").write_text(f"""# SOUL.md - {display_name}\n\nYou are {display_name}, a Hermes Agent running inside the local Docker container `{container}`.\n\n- Provider: Ollama Cloud.\n- Model: `{hermes_model}`.\n- Search backend: SearXNG at `{searxng_url}`.\n- Timezone: `{hermes_timezone}`.\n\nOpen the TUI from the host with:\n\n```bash\ndocker exec -it {container} hermes --tui\n```\n""", encoding="utf-8")
 os.chmod(root / "SOUL.md", 0o644)
 os.chmod(root / f"README-{container}.md", 0o644)
 os.system("chown -R 10000:10000 /opt/data")
