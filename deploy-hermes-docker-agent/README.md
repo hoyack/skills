@@ -38,6 +38,19 @@ Or pass the key through the environment:
 OLLAMA_API_KEY="..." ./scripts/deploy-hermes-docker-agent.sh
 ```
 
+If you prefer a local dotenv file, copy the example and fill in your own key:
+
+```bash
+cp .env.example .env
+$EDITOR .env
+set -a
+. ./.env
+set +a
+./scripts/deploy-hermes-docker-agent.sh
+```
+
+Keep `.env` local. The repository only includes `.env.example` with placeholders and safe defaults.
+
 The script chooses a short random agent name, picks the first available loopback port starting at `8642`, writes config under `$HOME/.hermes-agents`, and starts the Docker container.
 
 ## Optional Settings
