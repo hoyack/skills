@@ -76,7 +76,7 @@ queue_message(
 ```json
 {
   "ok": true,
-  "message_id": "<generated-uuid@hoyack.com>",
+  "message_id": "<generated-uuid@example.com>",
   "accepted_recipients": ["jane@example.com"],
   "rejected_recipients": [],
   "smtp_response": "250 2.0.0 Ok: queued",
