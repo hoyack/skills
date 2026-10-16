@@ -14,7 +14,7 @@ Use when the user asks to deploy a new local Docker-hosted Hermes Agent.
 - Model: `glm-5.2:cloud`
 - Ollama base URL: `https://ollama.com/v1`
 - Search backend: `searxng`
-- SearXNG URL: `https://searxng.hoyack.ai`
+- SearXNG URL: `https://searxng.example.com`
 - Timezone: `America/Chicago`
 - Gateway command: `gateway run`
 - API bind: loopback only, `127.0.0.1:<host-port>->8642/tcp`

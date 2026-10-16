@@ -1,6 +1,6 @@
 # n8n Public API Notes
 
-Base URL for Shrubnet: `https://n8n.cluster.shrubnet.com`.
+Example base URL: `https://n8n.example.com`.
 
 Authentication: pass the API key as `X-N8N-API-KEY`. Do not print the token. Load it from `.env`.
 
