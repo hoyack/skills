@@ -142,7 +142,7 @@ The official Firecrawl image normally uses Docker-in-Docker (DinD) to spawn cont
 
 ### Firecrawl API Key
 - **Test Key:** `fc-test-key-local` (set in `firecrawl/docker-compose.yml`)
-- **Admin Panel:** http://localhost:3002/admin/firecrawl-admin-2026/queues
+- **Admin Panel:** http://localhost:3002/admin/<BULL_AUTH_KEY>/queues
 
 ### Twenty CRM Secrets
 Stored in `twenty-crm/.env`:
