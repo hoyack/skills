@@ -19,8 +19,8 @@ services:
       - REDIS_RATE_LIMIT_URL=redis://redis:6379
       - PLAYWRIGHT_MICROSERVICE_URL=http://playwright-service:3000/scrape
       - USE_DB_AUTHENTICATION=false
-      - BULL_AUTH_KEY=firecrawl-admin-2026
-      - TEST_API_KEY=fc-test-key-local
+      - BULL_AUTH_KEY=${BULL_AUTH_KEY:?set BULL_AUTH_KEY in .env}
+      - TEST_API_KEY=${TEST_API_KEY:?set TEST_API_KEY in .env}
       - NUM_WORKERS_PER_QUEUE=2
       - CRAWL_CONCURRENT_REQUESTS=3
       - MAX_CONCURRENT_JOBS=2
@@ -69,8 +69,8 @@ services:
       - REDIS_RATE_LIMIT_URL=redis://redis:6379
       - PLAYWRIGHT_MICROSERVICE_URL=http://playwright-service:3000/scrape
       - USE_DB_AUTHENTICATION=false
-      - BULL_AUTH_KEY=firecrawl-admin-2026
-      - TEST_API_KEY=fc-test-key-local
+      - BULL_AUTH_KEY=${BULL_AUTH_KEY:?set BULL_AUTH_KEY in .env}
+      - TEST_API_KEY=${TEST_API_KEY:?set TEST_API_KEY in .env}
       - NUM_WORKERS_PER_QUEUE=2
       - CRAWL_CONCURRENT_REQUESTS=3
       - MAX_CONCURRENT_JOBS=2
@@ -116,7 +116,7 @@ services:
     restart: unless-stopped
     environment:
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
       - POSTGRES_DB=postgres
     volumes:
       - nuq-postgres-data:/var/lib/postgresql/data

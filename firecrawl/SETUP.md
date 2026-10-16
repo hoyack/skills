@@ -37,7 +37,7 @@ cat > .env <<'EOF'
 PORT=3002
 HOST=0.0.0.0
 USE_DB_AUTHENTICATION=false
-BULL_AUTH_KEY=firecrawl-admin-2026
+BULL_AUTH_KEY=<generate-a-random-key>
 TEST_API_KEY=fc-test-key-local
 LOGGING_LEVEL=INFO
 NUM_WORKERS_PER_QUEUE=4
@@ -80,7 +80,7 @@ curl -X POST http://localhost:3002/v1/scrape \
 
 ## Queue Admin Panel
 
-Access at: `http://localhost:3002/admin/firecrawl-admin-2026/queues`
+Access at: `http://localhost:3002/admin/<generate-a-random-key>/queues`
 
 ## Common Operations
 
@@ -140,7 +140,7 @@ Add to `~/.mcp.json`:
     "firecrawl": {
       "command": "firecrawl-mcp",
       "env": {
-        "FIRECRAWL_API_KEY": "fc-test-key-local",
+        "FIRECRAWL_API_KEY": "<your-TEST_API_KEY>",
         "FIRECRAWL_API_URL": "http://localhost:3002"
       }
     }
