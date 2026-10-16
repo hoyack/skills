@@ -5,7 +5,8 @@ description: >
   Paperclip AI autonomous agent platform for orchestrating AI agents, managing projects,
   and automating software engineering tasks. Integrates with Codex CLI for code editing
   and OpenClaw gateway for agent operations. Provides REST API and optional MCP server
-  for programmatic access.
+  for programmatic access. Use when the user wants to create or manage Paperclip
+  agents, projects, or issues, or automate engineering tasks through Paperclip.
 tags: [paperclip, ai-agent, autonomous, codex, openclaw, automation, project-management, mcp]
 metadata:
   clawdbot:

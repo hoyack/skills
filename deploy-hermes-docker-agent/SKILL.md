@@ -1,11 +1,11 @@
 ---
 name: "deploy-hermes-docker-agent"
-description: "Deploy a randomized local Docker Hermes agent with Ollama Cloud and SearXNG."
+description: "Deploy a randomized local Docker Hermes agent with Ollama Cloud and SearXNG. Use when the user asks to spin up a new local Docker-hosted Hermes Agent instance."
 ---
 
 # Deploy Hermes Docker Agent
 
-Use when Boss asks to deploy a new local Docker-hosted Hermes Agent like Birdie.
+Use when the user asks to deploy a new local Docker-hosted Hermes Agent.
 
 ## Defaults
 

@@ -1,6 +1,6 @@
 ---
 name: teams-hermes-agent
-description: Set up a Microsoft Teams/Microsoft 365 Teams SDK bot that bridges Teams chat to a Nous Research Hermes Agent HTTP API.
+description: Set up a Microsoft Teams/Microsoft 365 Teams SDK bot that bridges Teams chat to a Nous Research Hermes Agent HTTP API. Use when the user wants a Hermes Agent reachable from Microsoft Teams chat.
 ---
 
 # Teams Hermes Agent
