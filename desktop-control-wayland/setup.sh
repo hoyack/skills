@@ -2,7 +2,7 @@
 # Setup script for the desktop-control-wayland skill
 # Installs helper scripts into ~/.local/bin and ~/.openclaw/workspace
 
-set -e
+set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DEST_BIN="$HOME/.local/bin"
