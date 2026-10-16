@@ -12,7 +12,7 @@ services:
       - MAUTIC_DB_PORT=3306
       - MAUTIC_DB_NAME=mautic
       - MAUTIC_DB_USER=mautic
-      - MAUTIC_DB_PASSWORD=<db-password>
+      - MAUTIC_DB_PASSWORD=${MAUTIC_DB_PASSWORD:?set MAUTIC_DB_PASSWORD in .env}
       - MAUTIC_DB_DRIVER=pdo_mysql
       - MAUTIC_RUN_CRON_JOBS=true
       - MAUTIC_TRUSTED_PROXIES=["0.0.0.0/0"]
@@ -41,10 +41,10 @@ services:
     container_name: mautic-db
     restart: unless-stopped
     environment:
-      - MYSQL_ROOT_PASSWORD=<root-password>
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:?set MYSQL_ROOT_PASSWORD in .env}
       - MYSQL_DATABASE=mautic
       - MYSQL_USER=mautic
-      - MYSQL_PASSWORD=<db-password>
+      - MYSQL_PASSWORD=${MAUTIC_DB_PASSWORD:?set MAUTIC_DB_PASSWORD in .env}
       - MYSQL_CHARSET=utf8mb4
       - MYSQL_COLLATION=utf8mb4_unicode_ci
     volumes:
@@ -88,7 +88,7 @@ services:
       - MAUTIC_DB_PORT=3306
       - MAUTIC_DB_NAME=mautic
       - MAUTIC_DB_USER=mautic
-      - MAUTIC_DB_PASSWORD=<db-password>
+      - MAUTIC_DB_PASSWORD=${MAUTIC_DB_PASSWORD:?set MAUTIC_DB_PASSWORD in .env}
       - MAUTIC_RUN_CRON_JOBS=true
     volumes:
       - mautic-data:/var/www/html
