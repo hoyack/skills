@@ -42,8 +42,8 @@ Follow the detailed steps in [SETUP.md](./SETUP.md):
 
 ### 3. Access Paperclip
 
-- **Web UI**: http://192.168.1.68:3100
-- **API**: http://192.168.1.68:3100/api
+- **Web UI**: http://<your-host-ip>:3100
+- **API**: http://<your-host-ip>:3100/api
 
 ## Configuration Highlights
 
@@ -52,7 +52,7 @@ Follow the detailed steps in [SETUP.md](./SETUP.md):
 ```yaml
 environment:
   # Required for cookie auth to work over HTTP
-  - BETTER_AUTH_TRUSTED_ORIGINS=http://192.168.1.68:3100,http://localhost:3100
+  - BETTER_AUTH_TRUSTED_ORIGINS=http://<your-host-ip>:3100,http://localhost:3100
   
   # Required for Codex auth to persist
   - CODEX_HOME=/home/node/.codex
@@ -94,7 +94,7 @@ Add to `~/.mcp.json`:
       "command": "python",
       "args": ["/home/hoyack/Documents/skills/paperclip/mcp-server/src/paperclip_mcp/server.py"],
       "env": {
-        "PAPERCLIP_BASE_URL": "http://192.168.1.68:3100/api",
+        "PAPERCLIP_BASE_URL": "http://<your-host-ip>:3100/api",
         "PAPERCLIP_COMPANY_ID": "your-company-id",
         "PAPERCLIP_API_KEY": "your-api-key"
       }

@@ -17,7 +17,7 @@ env:
   PAPERCLIP_BASE_URL:
     description: URL of the Paperclip instance
     required: true
-    default: http://192.168.1.68:3100
+    default: http://<your-host-ip>:3100
   PAPERCLIP_EMAIL:
     description: Email for Paperclip authentication
     required: true
@@ -34,9 +34,9 @@ Paperclip AI is an autonomous AI agent platform for orchestrating AI agents, man
 
 | Service | URL | Description |
 |---------|-----|-------------|
-| Web UI | http://192.168.1.68:3100 | Main dashboard and agent management |
-| API | http://192.168.1.68:3100/api | REST API for programmatic access |
-| Health | http://192.168.1.68:3100/api/health | Health check endpoint |
+| Web UI | http://<your-host-ip>:3100 | Main dashboard and agent management |
+| API | http://<your-host-ip>:3100/api | REST API for programmatic access |
+| Health | http://<your-host-ip>:3100/api/health | Health check endpoint |
 
 ## Authentication
 
@@ -46,13 +46,13 @@ Paperclip uses cookie-based authentication with Better Auth.
 
 ```bash
 # Get session cookie
-COOKIE=$(curl -X POST http://192.168.1.68:3100/api/auth/sign-in/email \
+COOKIE=$(curl -X POST http://<your-host-ip>:3100/api/auth/sign-in/email \
   -H "Content-Type: application/json" \
   -d '{"email":"your-email@example.com","password":"your-password"}' \
   -v 2>&1 | grep -i "set-cookie" | grep "better-auth" | sed 's/< set-cookie: //' | cut -d';' -f1)
 
 # Use for subsequent requests
-curl -s http://192.168.1.68:3100/api/companies -b "$COOKIE"
+curl -s http://<your-host-ip>:3100/api/companies -b "$COOKIE"
 ```
 
 ## Core Concepts
@@ -89,10 +89,10 @@ Work items with:
 ### Create an Issue
 
 ```bash
-curl -X POST "http://192.168.1.68:3100/api/companies/$COMPANY_ID/issues" \
+curl -X POST "http://<your-host-ip>:3100/api/companies/$COMPANY_ID/issues" \
   -b "$COOKIE" \
   -H "Content-Type: application/json" \
-  -H "Origin: http://192.168.1.68:3100" \
+  -H "Origin: http://<your-host-ip>:3100" \
   -d '{
     "title": "Implement feature X",
     "description": "Detailed description of the feature",
@@ -104,41 +104,41 @@ curl -X POST "http://192.168.1.68:3100/api/companies/$COMPANY_ID/issues" \
 ### List All Issues
 
 ```bash
-curl -s "http://192.168.1.68:3100/api/companies/$COMPANY_ID/issues" \
+curl -s "http://<your-host-ip>:3100/api/companies/$COMPANY_ID/issues" \
   -b "$COOKIE" | jq '.[].identifier'
 ```
 
 ### Get Issue Details
 
 ```bash
-curl -s "http://192.168.1.68:3100/api/companies/$COMPANY_ID/issues/$ISSUE_ID" \
+curl -s "http://<your-host-ip>:3100/api/companies/$COMPANY_ID/issues/$ISSUE_ID" \
   -b "$COOKIE" | jq '.'
 ```
 
 ### Update Issue Status
 
 ```bash
-curl -X PATCH "http://192.168.1.68:3100/api/companies/$COMPANY_ID/issues/$ISSUE_ID" \
+curl -X PATCH "http://<your-host-ip>:3100/api/companies/$COMPANY_ID/issues/$ISSUE_ID" \
   -b "$COOKIE" \
   -H "Content-Type: application/json" \
-  -H "Origin: http://192.168.1.68:3100" \
+  -H "Origin: http://<your-host-ip>:3100" \
   -d '{"status": "done"}'
 ```
 
 ### List Agents
 
 ```bash
-curl -s "http://192.168.1.68:3100/api/companies/$COMPANY_ID/agents" \
+curl -s "http://<your-host-ip>:3100/api/companies/$COMPANY_ID/agents" \
   -b "$COOKIE" | jq '.[] | {name, role, status, adapterType}'
 ```
 
 ### Create an Agent
 
 ```bash
-curl -X POST "http://192.168.1.68:3100/api/companies/$COMPANY_ID/agents" \
+curl -X POST "http://<your-host-ip>:3100/api/companies/$COMPANY_ID/agents" \
   -b "$COOKIE" \
   -H "Content-Type: application/json" \
-  -H "Origin: http://192.168.1.68:3100" \
+  -H "Origin: http://<your-host-ip>:3100" \
   -d '{
     "name": "Developer Agent",
     "role": "general",
@@ -168,7 +168,7 @@ codex
 Paperclip agents can use OpenClaw gateway for enhanced capabilities:
 
 1. Configure agent with adapter type `openclaw_gateway`
-2. Set gateway URL: `ws://192.168.1.68:18789/`
+2. Set gateway URL: `ws://<your-host-ip>:18789/`
 3. Agent can now use OpenClaw tools (browser, file system, etc.)
 
 ## MCP Server (Optional)
@@ -194,10 +194,10 @@ See [MCP Documentation](./Docs/MCP.md) for setup instructions.
 
 ```bash
 # 1. Create issue
-ISSUE=$(curl -X POST "http://192.168.1.68:3100/api/companies/$COMPANY_ID/issues" \
+ISSUE=$(curl -X POST "http://<your-host-ip>:3100/api/companies/$COMPANY_ID/issues" \
   -b "$COOKIE" \
   -H "Content-Type: application/json" \
-  -H "Origin: http://192.168.1.68:3100" \
+  -H "Origin: http://<your-host-ip>:3100" \
   -d '{
     "title": "Refactor authentication module",
     "description": "Move auth logic to separate service",
@@ -205,10 +205,10 @@ ISSUE=$(curl -X POST "http://192.168.1.68:3100/api/companies/$COMPANY_ID/issues"
   }' | jq -r '.id')
 
 # 2. Assign to agent
-curl -X PATCH "http://192.168.1.68:3100/api/companies/$COMPANY_ID/issues/$ISSUE" \
+curl -X PATCH "http://<your-host-ip>:3100/api/companies/$COMPANY_ID/issues/$ISSUE" \
   -b "$COOKIE" \
   -H "Content-Type: application/json" \
-  -H "Origin: http://192.168.1.68:3100" \
+  -H "Origin: http://<your-host-ip>:3100" \
   -d "{\"assigneeAgentId\": \"$AGENT_ID\"}"
 ```
 
@@ -216,7 +216,7 @@ curl -X PATCH "http://192.168.1.68:3100/api/companies/$COMPANY_ID/issues/$ISSUE"
 
 ```bash
 # Get recent activity
-curl -s "http://192.168.1.68:3100/api/companies/$COMPANY_ID/activity" \
+curl -s "http://<your-host-ip>:3100/api/companies/$COMPANY_ID/activity" \
   -b "$COOKIE" | jq '.[:5] | .[].details'
 ```
 

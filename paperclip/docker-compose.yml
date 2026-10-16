@@ -13,7 +13,7 @@ services:
     environment:
       - PAPERCLIP_BIND=0.0.0.0
       - BETTER_AUTH_SECRET=<auth-secret>
-      - BETTER_AUTH_TRUSTED_ORIGINS=http://192.168.1.68:3100,http://localhost:3100
+      - BETTER_AUTH_TRUSTED_ORIGINS=http://<your-host-ip>:3100,http://localhost:3100
       - CODEX_HOME=/home/node/.codex
       - HOME=/home/node
     healthcheck:

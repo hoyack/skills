@@ -45,7 +45,7 @@ cp .env.example .env
 
 Edit `.env`:
 ```dotenv
-PAPERCLIP_BASE_URL=http://192.168.1.68:3100/api
+PAPERCLIP_BASE_URL=http://<your-host-ip>:3100/api
 PAPERCLIP_API_KEY=your_api_key_or_session
 PAPERCLIP_COMPANY_ID=61a140bd-2ec1-4369-8329-3e31636ab3c2
 ```
@@ -58,12 +58,12 @@ PAPERCLIP_COMPANY_ID=61a140bd-2ec1-4369-8329-3e31636ab3c2
 
 ```bash
 # Login and get company ID
-curl -X POST http://192.168.1.68:3100/api/auth/sign-in/email \
+curl -X POST http://<your-host-ip>:3100/api/auth/sign-in/email \
   -H "Content-Type: application/json" \
   -d '{"email":"your-email@example.com","password":"your-password"}'
 
 # Then fetch companies
-curl http://192.168.1.68:3100/api/companies \
+curl http://<your-host-ip>:3100/api/companies \
   -b "better-auth.session_token=your-token"
 ```
 
@@ -78,7 +78,7 @@ curl http://192.168.1.68:3100/api/companies \
       "command": "python",
       "args": ["/home/hoyack/Documents/skills/paperclip/mcp-server/src/paperclip_mcp/server.py"],
       "env": {
-        "PAPERCLIP_BASE_URL": "http://192.168.1.68:3100/api",
+        "PAPERCLIP_BASE_URL": "http://<your-host-ip>:3100/api",
         "PAPERCLIP_COMPANY_ID": "61a140bd-2ec1-4369-8329-3e31636ab3c2",
         "PAPERCLIP_API_KEY": "your-api-key"
       }
@@ -96,7 +96,7 @@ curl http://192.168.1.68:3100/api/companies \
       "command": "npx",
       "args": ["-y", "paperclip-mcp"],
       "env": {
-        "PAPERCLIP_BASE_URL": "http://192.168.1.68:3100/api",
+        "PAPERCLIP_BASE_URL": "http://<your-host-ip>:3100/api",
         "PAPERCLIP_COMPANY_ID": "61a140bd-2ec1-4369-8329-3e31636ab3c2",
         "PAPERCLIP_API_KEY": "your-api-key"
       }
@@ -222,7 +222,7 @@ python ~/Documents/skills/paperclip/mcp-server/src/paperclip_mcp/server.py
 
 **Fix:** Check Paperclip is running:
 ```bash
-curl http://192.168.1.68:3100/api/health
+curl http://<your-host-ip>:3100/api/health
 ```
 
 ### "Unauthorized" Error
@@ -240,7 +240,7 @@ curl http://192.168.1.68:3100/api/health
 
 **Fix:** Verify company ID:
 ```bash
-curl http://192.168.1.68:3100/api/companies -b "$COOKIE"
+curl http://<your-host-ip>:3100/api/companies -b "$COOKIE"
 ```
 
 ## Development

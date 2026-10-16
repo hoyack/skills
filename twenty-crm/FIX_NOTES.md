@@ -33,15 +33,15 @@ cd twenty-crm && docker compose down && docker compose up -d
 
 | Service | Status | URL |
 |---------|--------|-----|
-| Twenty CRM | ✅ Healthy | http://192.168.1.68 |
-| Nginx Proxy | ✅ Running | http://192.168.1.68 |
+| Twenty CRM | ✅ Healthy | http://<your-host-ip> |
+| Nginx Proxy | ✅ Running | http://<your-host-ip> |
 | Database | ✅ Healthy | - |
 
 ## Access URLs
 
 - **Local:** http://localhost:3000
 - **Via Nginx (local):** http://localhost
-- **LAN Access:** http://192.168.1.68
+- **LAN Access:** http://<your-host-ip>
 
 ## Test Commands
 
@@ -50,7 +50,7 @@ cd twenty-crm && docker compose down && docker compose up -d
 curl http://localhost/healthz
 
 # Test LAN access
-curl http://192.168.1.68/healthz
+curl http://<your-host-ip>/healthz
 
 # Direct server test
 curl http://localhost:3000/healthz
@@ -62,7 +62,7 @@ If you still see errors, clear your browser cache or use an incognito/private wi
 
 ## Next Steps
 
-1. Open http://192.168.1.68 in your browser
+1. Open http://<your-host-ip> in your browser
 2. Create admin account (if not done)
 3. Get API key from Settings → APIs & Webhooks
 4. Update `~/.mcp.json` with the API key
@@ -71,8 +71,8 @@ If you still see errors, clear your browser cache or use an incognito/private wi
 ## All Services Status
 
 ```
-✅ SearXNG       - http://192.168.1.68:8090
-✅ Twenty CRM    - http://192.168.1.68
-✅ Firecrawl     - http://192.168.1.68:3002
-✅ Nginx Proxy   - http://192.168.1.68 (port 80)
+✅ SearXNG       - http://<your-host-ip>:8090
+✅ Twenty CRM    - http://<your-host-ip>
+✅ Firecrawl     - http://<your-host-ip>:3002
+✅ Nginx Proxy   - http://<your-host-ip> (port 80)
 ```

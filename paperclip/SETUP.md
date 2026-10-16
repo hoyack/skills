@@ -5,8 +5,8 @@ Complete setup and configuration guide for Paperclip AI with OpenClaw gateway in
 ## Overview
 
 Paperclip AI is an autonomous AI agent platform with:
-- **Web UI** at http://192.168.1.68:3100
-- **REST API** at http://192.168.1.68:3100/api
+- **Web UI** at http://<your-host-ip>:3100
+- **REST API** at http://<your-host-ip>:3100/api
 - **Codex CLI** integration for code editing
 - **OpenClaw gateway** integration for agent operations
 
@@ -28,7 +28,7 @@ Paperclip AI is an autonomous AI agent platform with:
                               ▼
 ┌─────────────────────────────────────────────────────────────┐
 │                    OpenClaw Gateway                          │
-│                    ws://192.168.1.68:18789                   │
+│                    ws://<your-host-ip>:18789                   │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -64,7 +64,7 @@ services:
       
       # Better Auth configuration (required for authenticated mode)
       - BETTER_AUTH_SECRET=<auth-secret>
-      - BETTER_AUTH_TRUSTED_ORIGINS=http://192.168.1.68:3100,http://localhost:3100
+      - BETTER_AUTH_TRUSTED_ORIGINS=http://<your-host-ip>:3100,http://localhost:3100
       
       # Codex CLI configuration (critical for OAuth to work)
       - CODEX_HOME=/home/node/.codex
@@ -91,7 +91,7 @@ docker compose up -d
 docker logs paperclip --tail 50
 
 # Check health
-curl http://192.168.1.68:3100/api/health
+curl http://<your-host-ip>:3100/api/health
 ```
 
 Expected response:
@@ -109,12 +109,12 @@ Expected response:
 ### Step 1: Generate Bootstrap CEO Invite
 
 ```bash
-docker exec paperclip pnpm paperclipai auth bootstrap-ceo --base-url http://192.168.1.68:3100
+docker exec paperclip pnpm paperclipai auth bootstrap-ceo --base-url http://<your-host-ip>:3100
 ```
 
 Output:
 ```
-Invite URL: http://192.168.1.68:3100/invite/pcp_bootstrap_<token>
+Invite URL: http://<your-host-ip>:3100/invite/pcp_bootstrap_<token>
 Expires: 2026-04-15Txx:xx:xx.xxxZ
 ```
 
@@ -134,15 +134,15 @@ After creating the account, you need to accept the bootstrap invite via API:
 
 ```bash
 # Login and get cookie
-COOKIE=$(curl -X POST http://192.168.1.68:3100/api/auth/sign-in/email \
+COOKIE=$(curl -X POST http://<your-host-ip>:3100/api/auth/sign-in/email \
   -H "Content-Type: application/json" \
   -d '{"email":"your-email@example.com","password":"your-password"}' \
   -v 2>&1 | grep -i "set-cookie" | grep "better-auth" | sed 's/< set-cookie: //' | cut -d';' -f1)
 
 # Accept bootstrap invite
-curl -X POST "http://192.168.1.68:3100/api/invites/<invite-token>/accept" \
+curl -X POST "http://<your-host-ip>:3100/api/invites/<invite-token>/accept" \
   -H "Content-Type: application/json" \
-  -H "Origin: http://192.168.1.68:3100" \
+  -H "Origin: http://<your-host-ip>:3100" \
   -b "$COOKIE" \
   -d '{"requestType": "human"}'
 ```
@@ -157,7 +157,7 @@ curl -X POST "http://192.168.1.68:3100/api/invites/<invite-token>/accept" \
 
 ```yaml
 environment:
-  - BETTER_AUTH_TRUSTED_ORIGINS=http://192.168.1.68:3100,http://localhost:3100
+  - BETTER_AUTH_TRUSTED_ORIGINS=http://<your-host-ip>:3100,http://localhost:3100
 ```
 
 This removes the `Secure` flag from cookies, allowing them to work over HTTP.
@@ -229,7 +229,7 @@ docker exec paperclip chown -R node:node /home/node/.codex
 Paperclip agents can use OpenClaw gateway for operations. Configure agents with:
 
 - **Adapter Type:** `openclaw_gateway`
-- **Gateway URL:** `ws://192.168.1.68:18789/`
+- **Gateway URL:** `ws://<your-host-ip>:18789/`
 
 ## Troubleshooting
 
@@ -289,13 +289,13 @@ All API requests require authentication via cookie:
 
 ```bash
 # Login and extract cookie
-COOKIE=$(curl -X POST http://192.168.1.68:3100/api/auth/sign-in/email \
+COOKIE=$(curl -X POST http://<your-host-ip>:3100/api/auth/sign-in/email \
   -H "Content-Type: application/json" \
   -d '{"email":"user@example.com","password":"password"}' \
   -v 2>&1 | grep -i "set-cookie" | grep "better-auth" | sed 's/< set-cookie: //' | cut -d';' -f1)
 
 # Use cookie for subsequent requests
-curl -s http://192.168.1.68:3100/api/companies -b "$COOKIE"
+curl -s http://<your-host-ip>:3100/api/companies -b "$COOKIE"
 ```
 
 ## Maintenance

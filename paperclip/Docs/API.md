@@ -5,7 +5,7 @@ Complete REST API documentation for Paperclip AI.
 ## Base URL
 
 ```
-http://192.168.1.68:3100/api
+http://<your-host-ip>:3100/api
 ```
 
 ## Authentication
@@ -16,13 +16,13 @@ All API requests require authentication via session cookie.
 
 ```bash
 # Login and extract cookie
-COOKIE=$(curl -X POST http://192.168.1.68:3100/api/auth/sign-in/email \
+COOKIE=$(curl -X POST http://<your-host-ip>:3100/api/auth/sign-in/email \
   -H "Content-Type: application/json" \
   -d '{"email":"user@example.com","password":"password"}' \
   -v 2>&1 | grep -i "set-cookie" | grep "better-auth" | sed 's/< set-cookie: //' | cut -d';' -f1)
 
 # Use in subsequent requests
-curl -s http://192.168.1.68:3100/api/companies -b "$COOKIE"
+curl -s http://<your-host-ip>:3100/api/companies -b "$COOKIE"
 ```
 
 ### Cookie Details
@@ -39,7 +39,7 @@ All requests should include:
 
 ```
 Content-Type: application/json
-Origin: http://192.168.1.68:3100
+Origin: http://<your-host-ip>:3100
 ```
 
 For write operations (POST, PATCH, DELETE), also include:
