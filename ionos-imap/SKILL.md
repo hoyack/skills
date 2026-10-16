@@ -4,6 +4,7 @@ version: 0.1.0
 description: >
   Read, triage, search, and manage IONOS IMAP mailbox messages.
   Provides structured mail access for OpenClaw agents via MCP tools.
+  Use when the user wants to read, search, or triage mail in an IONOS mailbox.
 tags: [imap, email, ionos, mail, mcp]
 metadata:
   clawdbot:
@@ -65,14 +66,14 @@ mark_seen(folder="INBOX", uid="12847")
   "folder": "INBOX",
   "date": "2026-04-17T09:23:11+00:00",
   "from": {"name": "Jane Doe", "email": "jane@example.com"},
-  "to": [{"name": null, "email": "brandon@hoyack.com"}],
+  "to": [{"name": null, "email": "you@example.com"}],
   "cc": [],
   "subject": "Proposal follow-up",
   "flags": ["\\Seen"],
   "size_bytes": 24512,
   "has_attachments": true,
   "message_id": "<abc123@example.com>",
-  "in_reply_to": "<xyz789@hoyack.com>"
+  "in_reply_to": "<xyz789@example.com>"
 }
 ```
 

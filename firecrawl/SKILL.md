@@ -323,7 +323,7 @@ curl -X POST http://localhost:3002/v1/scrape \
 
 ## Queue Admin Panel
 
-Access at: `http://localhost:3002/admin/firecrawl-admin-2026/queues`
+Access at: `http://localhost:3002/admin/<BULL_AUTH_KEY>/queues`
 
 ## MCP Update
 

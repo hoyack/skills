@@ -22,7 +22,7 @@ docker-compose up -d
 
 ## Initial Setup
 
-1. Access Mautic at http://192.168.1.68:8080
+1. Access Mautic at http://<your-host-ip>:8080
 2. Complete the web installer:
    - Database: mautic-db:3306
    - DB Name: mautic
@@ -50,7 +50,7 @@ cp .env.example .env
 
 Edit `.env`:
 ```env
-MAUTIC_BASE_URL=http://192.168.1.68:8080/api
+MAUTIC_BASE_URL=http://<your-host-ip>:8080/api
 MAUTIC_USERNAME=<username>
 MAUTIC_PASSWORD=<password>
 ```
@@ -60,7 +60,7 @@ MAUTIC_PASSWORD=<password>
 ```bash
 # Test connectivity
 curl -u <username>:<password> \
-  http://192.168.1.68:8080/api/contacts?limit=1
+  http://<your-host-ip>:8080/api/contacts?limit=1
 ```
 
 ## MCP Server Setup
@@ -81,7 +81,7 @@ Add to `~/.mcp.json`:
       "command": "node",
       "args": ["/home/hoyack/skills/mautic/mcp-server/index.js"],
       "env": {
-        "MAUTIC_BASE_URL": "http://192.168.1.68:8080/api",
+        "MAUTIC_BASE_URL": "http://<your-host-ip>:8080/api",
         "MAUTIC_USERNAME": "<username>",
         "MAUTIC_PASSWORD": "<password>"
       }

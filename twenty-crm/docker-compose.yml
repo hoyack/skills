@@ -7,7 +7,7 @@ services:
       - "3000:3000"
     environment:
       - PORT=3000
-      - PG_DATABASE_URL=postgresql://${PG_DATABASE_USER:-postgres}:${PG_DATABASE_PASSWORD}@db:5432/default
+      - PG_DATABASE_URL=postgresql://${PG_DATABASE_USER:-postgres}:${PG_DATABASE_PASSWORD:?set PG_DATABASE_PASSWORD in .env}@db:5432/default
       - REDIS_URL=${REDIS_URL:-redis://redis:6379}
       - SERVER_URL=${SERVER_URL:-http://localhost:3000}
       - APP_SECRET=${APP_SECRET}
@@ -36,7 +36,7 @@ services:
     restart: unless-stopped
     command: yarn worker:prod
     environment:
-      - PG_DATABASE_URL=postgresql://${PG_DATABASE_USER:-postgres}:${PG_DATABASE_PASSWORD}@db:5432/default
+      - PG_DATABASE_URL=postgresql://${PG_DATABASE_USER:-postgres}:${PG_DATABASE_PASSWORD:?set PG_DATABASE_PASSWORD in .env}@db:5432/default
       - REDIS_URL=${REDIS_URL:-redis://redis:6379}
       - SERVER_URL=${SERVER_URL:-http://localhost:3000}
       - APP_SECRET=${APP_SECRET}
@@ -60,7 +60,7 @@ services:
     restart: unless-stopped
     environment:
       - POSTGRES_USER=${PG_DATABASE_USER:-postgres}
-      - POSTGRES_PASSWORD=${PG_DATABASE_PASSWORD}
+      - POSTGRES_PASSWORD=${PG_DATABASE_PASSWORD:?set PG_DATABASE_PASSWORD in .env}
       - POSTGRES_DB=default
     volumes:
       - postgres-data:/var/lib/postgresql/data

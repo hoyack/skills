@@ -9,10 +9,10 @@ Nginx reverse proxy has been configured to make Twenty CRM accessible from your 
 | URL | Access Type |
 |-----|-------------|
 | http://localhost:3000 | Direct access (local only) |
-| http://192.168.1.68 | Via nginx proxy (LAN access) ✅ |
+| http://<your-host-ip> | Via nginx proxy (LAN access) ✅ |
 | http://localhost | Via nginx proxy (local) ✅ |
 
-**For remote LAN access:** Use http://192.168.1.68 from any device on your network.
+**For remote LAN access:** Use http://<your-host-ip> from any device on your network.
 
 ---
 
@@ -48,11 +48,11 @@ curl http://localhost:3000/healthz
 
 # Via nginx
 curl http://localhost/healthz
-curl http://192.168.1.68/healthz
+curl http://<your-host-ip>/healthz
 ```
 
 ### From another device on your LAN:
-Open a browser and navigate to: **http://192.168.1.68**
+Open a browser and navigate to: **http://<your-host-ip>**
 
 You should see the Twenty CRM login page.
 
@@ -62,16 +62,16 @@ You should see the Twenty CRM login page.
 
 | Service | Local URL | LAN URL | Port |
 |---------|-----------|---------|------|
-| **SearXNG** | http://localhost:8090 | http://192.168.1.68:8090 | 8090 |
-| **Twenty CRM** | http://localhost:3000 | http://192.168.1.68 | 80 (nginx) |
-| **Firecrawl** | http://localhost:3002 | http://192.168.1.68:3002 | 3002 |
+| **SearXNG** | http://localhost:8090 | http://<your-host-ip>:8090 | 8090 |
+| **Twenty CRM** | http://localhost:3000 | http://<your-host-ip> | 80 (nginx) |
+| **Firecrawl** | http://localhost:3002 | http://<your-host-ip>:3002 | 3002 |
 
 ---
 
 ## Next Steps for Twenty CRM Setup
 
 1. **Open Twenty CRM** from your remote device:
-   - Navigate to: http://192.168.1.68
+   - Navigate to: http://<your-host-ip>
 
 2. **Create admin account** (if not already done)
 
@@ -116,7 +116,7 @@ If port 80 is already in use, change the port mapping in `nginx/docker-compose.y
 ports:
   - "8080:80"  # Use port 8080 instead
 ```
-Then access via: http://192.168.1.68:8080
+Then access via: http://<your-host-ip>:8080
 
 ---
 

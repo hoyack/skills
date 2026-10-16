@@ -3,7 +3,7 @@ set -euo pipefail
 
 IMAGE="${HERMES_IMAGE:-nousresearch/hermes-agent:latest}"
 MODEL="${HERMES_MODEL:-glm-5.2:cloud}"
-SEARXNG_URL="${SEARXNG_URL:-https://searxng.hoyack.ai}"
+SEARXNG_URL="${SEARXNG_URL:?Set SEARXNG_URL to your SearXNG instance (e.g. https://searxng.example.com)}"
 TIMEZONE="${HERMES_TIMEZONE:-America/Chicago}"
 DATA_PARENT="${HERMES_DATA_PARENT:-$HOME/.hermes-agents}"
 

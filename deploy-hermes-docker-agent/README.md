@@ -9,7 +9,7 @@ Deploy a randomized local Docker-hosted Hermes Agent that uses Ollama Cloud for 
 - A Docker container named `hermes-<agent-slug>`
 - A private data directory at `$HOME/.hermes-agents/<agent-slug>`
 - Hermes config for `ollama-cloud` with model `glm-5.2:cloud`
-- SearXNG search configured for `https://searxng.hoyack.ai`
+- SearXNG search configured for `https://searxng.example.com`
 - A loopback-only API endpoint at `http://127.0.0.1:<port>/health`
 - A per-agent `SOUL.md` and runtime README in the data directory
 
@@ -61,7 +61,7 @@ Override defaults with environment variables:
 HERMES_AGENT_NAME="Vega-7e4" \
 HERMES_HOST_PORT="8643" \
 HERMES_MODEL="glm-5.2:cloud" \
-SEARXNG_URL="https://searxng.hoyack.ai" \
+SEARXNG_URL="https://searxng.example.com" \
 OLLAMA_API_KEY="..." \
 ./scripts/deploy-hermes-docker-agent.sh
 ```

@@ -1,11 +1,11 @@
 ---
 name: n8n-api
-description: Manage and inspect Shrubnet's n8n automation server via the n8n Public API. Use when the user asks about n8n workflows, executions, credentials metadata, tags, users, webhook automation, debugging workflow runs, activating/deactivating workflows, creating/updating workflows, or checking the n8n server at n8n.cluster.shrubnet.com. Stores API credentials in the skill folder .env, never in SKILL.md.
+description: Manage and inspect a self-hosted n8n automation server via the n8n Public API. Use when the user asks about n8n workflows, executions, credentials metadata, tags, users, webhook automation, debugging workflow runs, activating/deactivating workflows, creating/updating workflows, or checking the n8n server at n8n.example.com. Stores API credentials in the skill folder .env, never in SKILL.md.
 ---
 
 # n8n API Skill
 
-Interact with Shrubnet n8n at `https://n8n.cluster.shrubnet.com` using the n8n Public API.
+Interact with your n8n server at `https://n8n.example.com` using the n8n Public API.
 
 ## Configuration
 
@@ -17,7 +17,7 @@ Load credentials from this skill directory:
 Expected variables:
 
 ```bash
-N8N_BASE_URL=https://n8n.cluster.shrubnet.com
+N8N_BASE_URL=https://n8n.example.com
 N8N_API_KEY=...
 ```
 

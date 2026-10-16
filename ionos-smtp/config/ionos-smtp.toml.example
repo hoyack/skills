@@ -6,7 +6,7 @@ timeout_seconds = 30
 
 [account]
 default_from_name = "Brandon Hoyack"
-default_from_email = "brandon@hoyack.com"    # must match authenticated account
+default_from_email = "you@example.com"    # must match authenticated account
 default_reply_to = ""             # optional; blank = no Reply-To header
 
 [send]

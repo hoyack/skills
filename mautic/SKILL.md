@@ -71,7 +71,7 @@ If the MCP server doesn't cover a specific operation, use the Mautic REST API di
 
 ### Base URL
 ```
-http://192.168.1.68:8080/api
+http://<your-host-ip>:8080/api
 ```
 
 ### Authentication
@@ -84,22 +84,22 @@ Use HTTP Basic Auth with the credentials from `.env`:
 ```bash
 # List contacts
 curl -u <username>:<password> \
-  http://192.168.1.68:8080/api/contacts
+  http://<your-host-ip>:8080/api/contacts
 
 # Get single contact
 curl -u <username>:<password> \
-  http://192.168.1.68:8080/api/contacts/1
+  http://<your-host-ip>:8080/api/contacts/1
 
 # Create contact
 curl -X POST -u <username>:<password> \
   -H "Content-Type: application/json" \
   -d '{"email":"test@example.com","firstname":"John","lastname":"Doe"}' \
-  http://192.168.1.68:8080/api/contacts/new
+  http://<your-host-ip>:8080/api/contacts/new
 ```
 
 ## Mautic Web Interface
 
-Access the Mautic dashboard at: http://192.168.1.68:8080
+Access the Mautic dashboard at: http://<your-host-ip>:8080
 
 Login credentials:
 - Username: `<username>`

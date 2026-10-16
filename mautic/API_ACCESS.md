@@ -5,7 +5,7 @@
 Mautic provides a REST API at the following base URL:
 
 ```
-http://192.168.1.68:8080/api/
+http://<your-host-ip>:8080/api/
 ```
 
 ## Authentication
@@ -19,7 +19,7 @@ Mautic API supports two authentication methods:
 
 ### Step 1: Enable the API in Mautic
 
-1. Log in to Mautic: http://192.168.1.68:8080
+1. Log in to Mautic: http://<your-host-ip>:8080
 2. Go to **Settings** (gear icon) → **Configuration**
 3. Click on **API Settings** tab
 4. Set **API enabled?** to **Yes**
@@ -130,12 +130,12 @@ POST /api/forms/{formId}/submit
 export MAUTIC_USER="your-mautic-username"
 export MAUTIC_PASS="your-mautic-password"
 
-curl -X GET http://192.168.1.68:8080/api/contacts \
+curl -X GET http://<your-host-ip>:8080/api/contacts \
   -u "$MAUTIC_USER:$MAUTIC_PASS" \
   -H "Content-Type: application/json"
 
 # Create a contact
-curl -X POST http://192.168.1.68:8080/api/contacts/new \
+curl -X POST http://<your-host-ip>:8080/api/contacts/new \
   -u "$MAUTIC_USER:$MAUTIC_PASS" \
   -H "Content-Type: application/json" \
   -d '{
@@ -146,12 +146,12 @@ curl -X POST http://192.168.1.68:8080/api/contacts/new \
   }'
 
 # Get contact by ID
-curl -X GET http://192.168.1.68:8080/api/contacts/1 \
+curl -X GET http://<your-host-ip>:8080/api/contacts/1 \
   -u "$MAUTIC_USER:$MAUTIC_PASS" \
   -H "Content-Type: application/json"
 
 # Update contact
-curl -X PATCH http://192.168.1.68:8080/api/contacts/1/edit \
+curl -X PATCH http://<your-host-ip>:8080/api/contacts/1/edit \
   -u "$MAUTIC_USER:$MAUTIC_PASS" \
   -H "Content-Type: application/json" \
   -d '{
@@ -159,7 +159,7 @@ curl -X PATCH http://192.168.1.68:8080/api/contacts/1/edit \
   }'
 
 # Delete contact
-curl -X DELETE http://192.168.1.68:8080/api/contacts/1/delete \
+curl -X DELETE http://<your-host-ip>:8080/api/contacts/1/delete \
   -u "$MAUTIC_USER:$MAUTIC_PASS"
 ```
 
@@ -168,7 +168,7 @@ curl -X DELETE http://192.168.1.68:8080/api/contacts/1/delete \
 ```python
 import requests
 
-base_url = "http://192.168.1.68:8080/api"
+base_url = "http://<your-host-ip>:8080/api"
 auth = ("username", "password")
 
 # Get contacts
@@ -194,7 +194,7 @@ response = requests.post(
 const axios = require('axios');
 
 const mautic = axios.create({
-  baseURL: 'http://192.168.1.68:8080/api',
+  baseURL: 'http://<your-host-ip>:8080/api',
   auth: {
     username: 'your-username',
     password: 'your-password'
@@ -278,7 +278,7 @@ For complete API documentation:
 2. Go to the right sidebar menu
 3. Click on **API Documentation**
 
-Or visit: http://192.168.1.68:8080/api/docs (after enabling API)
+Or visit: http://<your-host-ip>:8080/api/docs (after enabling API)
 
 ## Rate Limiting
 

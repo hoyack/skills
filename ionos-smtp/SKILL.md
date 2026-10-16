@@ -4,6 +4,7 @@ version: 0.1.0
 description: >
   Compose and send email via IONOS SMTP with attachments, threading,
   inline images, and optional queue-based async delivery.
+  Use when the user wants to send or reply to email from an IONOS mailbox.
 tags: [smtp, email, ionos, mail, mcp, send]
 metadata:
   clawdbot:
@@ -75,7 +76,7 @@ queue_message(
 ```json
 {
   "ok": true,
-  "message_id": "<generated-uuid@hoyack.com>",
+  "message_id": "<generated-uuid@example.com>",
   "accepted_recipients": ["jane@example.com"],
   "rejected_recipients": [],
   "smtp_response": "250 2.0.0 Ok: queued",
