@@ -42,23 +42,23 @@ curl -s http://localhost:3000/healthz
 # Test scrape endpoint
 curl -X POST http://localhost:3002/v1/scrape \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer fc-test-key-local" \
+  -H "Authorization: Bearer <your-test-api-key>" \
   -d '{"url":"https://example.com","formats":["markdown"]}'
 
 # Crawl endpoint (async)
 curl -X POST http://localhost:3002/v1/crawl \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer fc-test-key-local" \
+  -H "Authorization: Bearer <your-test-api-key>" \
   -d '{"url":"https://firecrawl.dev","limit":5}'
 
 # Check crawl status
 curl -s http://localhost:3002/v1/crawl/JOB_ID \
-  -H "Authorization: Bearer fc-test-key-local"
+  -H "Authorization: Bearer <your-test-api-key>"
 
 # Search endpoint (uses SearXNG)
 curl -X POST http://localhost:3002/v1/search \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer fc-test-key-local" \
+  -H "Authorization: Bearer <your-test-api-key>" \
   -d '{"query":"latest AI news","limit":5}'
 ```
 
@@ -141,7 +141,7 @@ The official Firecrawl image normally uses Docker-in-Docker (DinD) to spawn cont
 ## Environment Variables
 
 ### Firecrawl API Key
-- **Test Key:** `fc-test-key-local` (set in `firecrawl/docker-compose.yml`)
+- **Test Key:** `<your-test-api-key>` (set in `firecrawl/docker-compose.yml`)
 - **Admin Panel:** http://localhost:3002/admin/<BULL_AUTH_KEY>/queues
 
 ### Twenty CRM Secrets
@@ -203,7 +203,7 @@ Firecrawl is already configured to use your local SearXNG instance:
 ```bash
 curl -X POST http://localhost:3002/v1/search \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer fc-test-key-local" \
+  -H "Authorization: Bearer <your-test-api-key>" \
   -d '{"query":"machine learning tutorials"}'
 ```
 
@@ -211,7 +211,7 @@ curl -X POST http://localhost:3002/v1/search \
 ```bash
 curl -X POST http://localhost:3002/v1/scrape \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer fc-test-key-local" \
+  -H "Authorization: Bearer <your-test-api-key>" \
   -d '{
     "url": "https://example.com",
     "formats": ["markdown", "html"],
@@ -225,7 +225,7 @@ curl -X POST http://localhost:3002/v1/scrape \
 # Start a crawl job
 curl -X POST http://localhost:3002/v1/crawl \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer fc-test-key-local" \
+  -H "Authorization: Bearer <your-test-api-key>" \
   -d '{
     "url": "https://docs.firecrawl.dev",
     "excludePaths": ["/blog/*"],

@@ -38,7 +38,7 @@ PORT=3002
 HOST=0.0.0.0
 USE_DB_AUTHENTICATION=false
 BULL_AUTH_KEY=<generate-a-random-key>
-TEST_API_KEY=fc-test-key-local
+TEST_API_KEY=<your-test-api-key>
 LOGGING_LEVEL=INFO
 NUM_WORKERS_PER_QUEUE=4
 CRAWL_CONCURRENT_REQUESTS=5
@@ -63,7 +63,7 @@ docker compose ps
 
 # Test scrape
 curl -X POST http://localhost:3002/v1/scrape \
-  -H "Authorization: Bearer fc-test-key-local" \
+  -H "Authorization: Bearer <your-test-api-key>" \
   -H "Content-Type: application/json" \
   -d '{"url":"https://example.com","formats":["markdown"]}'
 ```

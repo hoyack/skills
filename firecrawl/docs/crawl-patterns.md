@@ -6,7 +6,7 @@ Crawl all pages under a docs subdirectory:
 
 ```bash
 curl -X POST http://localhost:3002/v1/crawl \
-  -H "Authorization: Bearer fc-test-key-local" \
+  -H "Authorization: Bearer <your-test-api-key>" \
   -H "Content-Type: application/json" \
   -d '{
     "url": "https://docs.example.com",
@@ -25,7 +25,7 @@ curl -X POST http://localhost:3002/v1/crawl \
 
 ```bash
 curl -X POST http://localhost:3002/v1/crawl \
-  -H "Authorization: Bearer fc-test-key-local" \
+  -H "Authorization: Bearer <your-test-api-key>" \
   -H "Content-Type: application/json" \
   -d '{
     "url": "https://blog.example.com",
@@ -44,7 +44,7 @@ curl -X POST http://localhost:3002/v1/crawl \
 
 ```bash
 curl -X POST http://localhost:3002/v1/crawl \
-  -H "Authorization: Bearer fc-test-key-local" \
+  -H "Authorization: Bearer <your-test-api-key>" \
   -H "Content-Type: application/json" \
   -d '{
     "url": "https://shop.example.com/products",
@@ -62,7 +62,7 @@ curl -X POST http://localhost:3002/v1/crawl \
 
 ```bash
 curl -X POST http://localhost:3002/v1/crawl \
-  -H "Authorization: Bearer fc-test-key-local" \
+  -H "Authorization: Bearer <your-test-api-key>" \
   -H "Content-Type: application/json" \
   -d '{
     "url": "https://example.com",
@@ -78,7 +78,7 @@ curl -X POST http://localhost:3002/v1/crawl \
 ```bash
 # Start crawl
 JOB_ID=$(curl -s -X POST http://localhost:3002/v1/crawl \
-  -H "Authorization: Bearer fc-test-key-local" \
+  -H "Authorization: Bearer <your-test-api-key>" \
   -H "Content-Type: application/json" \
   -d '{"url":"https://docs.example.com","limit":100}' | python3 -c "import sys,json;print(json.load(sys.stdin)['id'])")
 
@@ -86,7 +86,7 @@ echo "Job: $JOB_ID"
 
 # Poll status
 curl -s http://localhost:3002/v1/crawl/$JOB_ID \
-  -H "Authorization: Bearer fc-test-key-local" | python3 -c "
+  -H "Authorization: Bearer <your-test-api-key>" | python3 -c "
 import sys,json
 d = json.load(sys.stdin)
 print(f'Status: {d[\"status\"]}')
@@ -96,7 +96,7 @@ print(f'Credits: {d.get(\"creditsUsed\",0)}')
 
 # Cancel if needed
 curl -X DELETE http://localhost:3002/v1/crawl/$JOB_ID \
-  -H "Authorization: Bearer fc-test-key-local"
+  -H "Authorization: Bearer <your-test-api-key>"
 ```
 
 ## Map Before Crawl
@@ -106,7 +106,7 @@ Discover URLs first, then selectively scrape:
 ```bash
 # Step 1: Map the site
 URLS=$(curl -s -X POST http://localhost:3002/v1/map \
-  -H "Authorization: Bearer fc-test-key-local" \
+  -H "Authorization: Bearer <your-test-api-key>" \
   -H "Content-Type: application/json" \
   -d '{"url":"https://example.com","limit":100}')
 
@@ -114,7 +114,7 @@ echo "$URLS" | python3 -c "import sys,json; links=json.load(sys.stdin)['links'];
 
 # Step 2: Batch scrape interesting URLs
 curl -X POST http://localhost:3002/v1/batch/scrape \
-  -H "Authorization: Bearer fc-test-key-local" \
+  -H "Authorization: Bearer <your-test-api-key>" \
   -H "Content-Type: application/json" \
   -d '{
     "urls": ["https://example.com/pricing", "https://example.com/features"],
