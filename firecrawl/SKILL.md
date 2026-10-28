@@ -92,7 +92,7 @@ Authorization: Bearer $FIRECRAWL_API_KEY
 
 ```bash
 curl -X POST http://localhost:3002/v1/scrape \
-  -H "Authorization: Bearer fc-test-key-local" \
+  -H "Authorization: Bearer <your-test-api-key>" \
   -H "Content-Type: application/json" \
   -d '{
     "url": "https://example.com",
@@ -156,7 +156,7 @@ curl -X POST http://localhost:3002/v1/scrape \
 ```bash
 # Start crawl
 curl -X POST http://localhost:3002/v1/crawl \
-  -H "Authorization: Bearer fc-test-key-local" \
+  -H "Authorization: Bearer <your-test-api-key>" \
   -H "Content-Type: application/json" \
   -d '{
     "url": "https://docs.example.com",
@@ -168,11 +168,11 @@ curl -X POST http://localhost:3002/v1/crawl \
 
 # Check status
 curl http://localhost:3002/v1/crawl/JOB_ID \
-  -H "Authorization: Bearer fc-test-key-local"
+  -H "Authorization: Bearer <your-test-api-key>"
 
 # Cancel crawl
 curl -X DELETE http://localhost:3002/v1/crawl/JOB_ID \
-  -H "Authorization: Bearer fc-test-key-local"
+  -H "Authorization: Bearer <your-test-api-key>"
 ```
 
 ### Crawl Parameters
@@ -194,7 +194,7 @@ curl -X DELETE http://localhost:3002/v1/crawl/JOB_ID \
 
 ```bash
 curl -X POST http://localhost:3002/v1/map \
-  -H "Authorization: Bearer fc-test-key-local" \
+  -H "Authorization: Bearer <your-test-api-key>" \
   -H "Content-Type: application/json" \
   -d '{"url": "https://example.com", "limit": 100}'
 # Returns: {"success": true, "links": ["url1", "url2", ...]}
@@ -217,7 +217,7 @@ Firecrawl integrates with SearXNG for web search, optionally scraping each resul
 
 ```bash
 curl -X POST http://localhost:3002/v1/search \
-  -H "Authorization: Bearer fc-test-key-local" \
+  -H "Authorization: Bearer <your-test-api-key>" \
   -H "Content-Type: application/json" \
   -d '{
     "query": "docker compose tutorial",
@@ -242,7 +242,7 @@ Requires an LLM API key (OpenAI or Ollama) configured in the Firecrawl `.env`.
 
 ```bash
 curl -X POST http://localhost:3002/v1/extract \
-  -H "Authorization: Bearer fc-test-key-local" \
+  -H "Authorization: Bearer <your-test-api-key>" \
   -H "Content-Type: application/json" \
   -d '{
     "urls": ["https://example.com/pricing"],
@@ -270,7 +270,7 @@ curl -X POST http://localhost:3002/v1/extract \
 
 ```bash
 curl -X POST http://localhost:3002/v1/batch/scrape \
-  -H "Authorization: Bearer fc-test-key-local" \
+  -H "Authorization: Bearer <your-test-api-key>" \
   -H "Content-Type: application/json" \
   -d '{
     "urls": ["https://example.com/page1", "https://example.com/page2"],
@@ -295,7 +295,7 @@ Pass `actions` array in scrape requests to interact with pages before extracting
 
 ```bash
 curl -X POST http://localhost:3002/v1/scrape \
-  -H "Authorization: Bearer fc-test-key-local" \
+  -H "Authorization: Bearer <your-test-api-key>" \
   -H "Content-Type: application/json" \
   -d '{
     "url": "https://example.com",

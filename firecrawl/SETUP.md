@@ -33,12 +33,13 @@ image: ghcr.io/firecrawl/nuq-postgres:latest
 ### 3. Configure environment
 
 ```bash
-cat > .env <<'EOF'
+cat > .env <<EOF
 PORT=3002
 HOST=0.0.0.0
 USE_DB_AUTHENTICATION=false
-BULL_AUTH_KEY=<generate-a-random-key>
-TEST_API_KEY=fc-test-key-local
+BULL_AUTH_KEY=$(openssl rand -hex 24)
+TEST_API_KEY=$(openssl rand -hex 24)
+POSTGRES_PASSWORD=$(openssl rand -hex 24)
 LOGGING_LEVEL=INFO
 NUM_WORKERS_PER_QUEUE=4
 CRAWL_CONCURRENT_REQUESTS=5
@@ -63,7 +64,7 @@ docker compose ps
 
 # Test scrape
 curl -X POST http://localhost:3002/v1/scrape \
-  -H "Authorization: Bearer fc-test-key-local" \
+  -H "Authorization: Bearer <your-test-api-key>" \
   -H "Content-Type: application/json" \
   -d '{"url":"https://example.com","formats":["markdown"]}'
 ```
@@ -80,7 +81,7 @@ curl -X POST http://localhost:3002/v1/scrape \
 
 ## Queue Admin Panel
 
-Access at: `http://localhost:3002/admin/<generate-a-random-key>/queues`
+Access at: `http://localhost:3002/admin/<BULL_AUTH_KEY>/queues`
 
 ## Common Operations
 
@@ -140,7 +141,7 @@ Add to `~/.mcp.json`:
     "firecrawl": {
       "command": "firecrawl-mcp",
       "env": {
-        "FIRECRAWL_API_KEY": "<your-TEST_API_KEY>",
+        "FIRECRAWL_API_KEY": "<your-test-api-key>",
         "FIRECRAWL_API_URL": "http://localhost:3002"
       }
     }

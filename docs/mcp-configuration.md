@@ -28,7 +28,7 @@ All three services now have MCP (Model Context Protocol) servers configured!
     "firecrawl": {
       "command": "firecrawl-mcp",
       "env": {
-        "FIRECRAWL_API_KEY": "fc-test-key-local",
+        "FIRECRAWL_API_KEY": "<your-test-api-key>",
         "FIRECRAWL_API_URL": "http://localhost:3002"
       }
     },
@@ -155,7 +155,7 @@ mcp__firecrawl__firecrawl_extract({
 
 ### Configuration
 - **FIRECRAWL_API_URL:** `http://localhost:3002`
-- **FIRECRAWL_API_KEY:** `fc-test-key-local`
+- **FIRECRAWL_API_KEY:** `<your-test-api-key>`
 
 ---
 

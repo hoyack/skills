@@ -15,7 +15,7 @@ The Twenty CRM MCP server has been configured with your API key.
     "firecrawl": {
       "command": "firecrawl-mcp", 
       "env": {
-        "FIRECRAWL_API_KEY": "fc-test-key-local",
+        "FIRECRAWL_API_KEY": "<your-test-api-key>",
         "FIRECRAWL_API_URL": "http://localhost:3002"
       }
     },
